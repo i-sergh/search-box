@@ -1,0 +1,79 @@
+{% extends "base.html"%}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='search.css') }}"> 
+<script>
+    function Test(){
+        console.log("Me Changing" + document.getElementById("InputSearch").value);
+    }
+
+    function ClearUL(){
+        const ul = document.getElementById('ResultList');
+        ul.innerHTML = '';
+    }
+    
+    function Add2UL(word){
+        const ul = document.getElementById('ResultList');
+        /* let word = document.getElementById("InputSearch").value; */
+        document.getElementById('ResultList').innerHTML += ('<li> <span class="li_search">'+word+' </span></li>');
+    }
+
+    async function getSearchData(){
+        word = document.getElementById("InputSearch").value;
+        console.log(word);
+        url = 'http://127.0.0.1:8000/api/search/find?inpt=' + word;
+        await fetch(url).then((response) => response.json()) //2
+            .then((data) => {
+                console.log(data);
+                 response_data = data['data'];
+                 FillUL(response_data); //3
+                 });
+    }
+
+    function FillUL(data){
+        ClearUL();
+        for (const element of data) {
+            Add2UL(element);
+        }
+    }
+</script>
+
+
+{% endblock %}
+
+{% block header %}
+<div class="search_menu_box">
+    <div class="searchbox search_box_element">
+        <div class="input_search">  
+            <form action="#">
+                <input id="InputSearch" type="text" autocomplete="off" placeholder="my search"  oninput="getSearchData()" onchange="Add2UL()" ondblclick="ClearUL()">
+            </form>
+        </div>
+    </div>
+    <div class="result_box">
+        <ul id="ResultList">
+            <li>
+                <span class="li_search">ein</span>  
+            </li>
+            <li>
+                <span class="li_search">zwei</span>
+            </li>
+            <li>
+                <span class="li_search">drei</span>
+            </li>
+            <li>
+                <span class="li_search">drei</span>
+            </li>
+            <li>
+                <span class="li_search">drei</span>
+            </li>
+            <li>
+                <span class="li_search">drei</span>
+            </li>
+            <li>
+                <span class="li_search">drei</span>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
